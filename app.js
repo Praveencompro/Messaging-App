@@ -1,20 +1,17 @@
 var express = require('express');
 var app = express();
-var users = require('./user.js');
-var messages = require('./message.js');
-var config = require('./config.js');
-var MongoClient = require('mongodb').MongoClient;
+var routes = require('./routes');
+var config = require('./config');
+const db = require('./DAL/db');
 
-app.use('/users', users);
-app.use('/messages', messages);
+app.use('/users', routes.userroutes);
+app.use('/messages', routes.messageroutes);
 
-var db;
-
-MongoClient.connect(config.database.mongodb.url, { promiseLibrary: Promise }, (err, dbconn) => {
-    if (err) {
-        console.log(`Failed to connect to the database. ${err.stack}`);
-    }
-    db = dbconn;
+db.init().then(() => {    
     app.listen(config.appsettings.port, () => {
+        console.log('Node server started successfully at port : ' + config.appsettings.port);
     });
-});
+})
+.catch((error)=>{
+    console.log('Node server failed to start. ' + error.stack);
+})

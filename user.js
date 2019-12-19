@@ -1,32 +1,50 @@
-var express = require('express');
-var router = express.Router();
-var bodyParser = require('body-parser');
-var config = require('./config.js');
-var dbutils = require('./DAL/db.js');
+class User {
+    constructor(db) {
+        this.collection = db.collection('users');
+    }
 
-// create application/json parser
-var jsonParser = bodyParser.json()
+    getUserByEmailId(emailid) {
+        return new Promise((resolve, reject) => {
+            var query = { emailid };
+            var qprojection = { 'password': 0 };
+            this.collection.find(query, { projection: qprojection }).toArray(function (err, result) {
+                if (err) throw err;
+                console.log(result);
+                resolve(result);
+            });
+        })
+    }
 
-// create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+    getAllUsers() {
+        return new Promise((resolve, reject) => {
+            var query = {};
+            var qprojection = { 'password': 0 };
+            this.collection.find(query, { projection: qprojection }).toArray(function (err, result) {
+                if (err) throw err;
+                console.log(result);
+                resolve(result);
+            });
+        })
+    }
 
-/*
-    Request for adding a user in the system
-*/
-router.post('/', urlencodedParser, function (req, res) {
-    res.send('add user req recieved');
-    let userdata = req.body;
-    //using existing mongodb connection and adding new user
-    dbutils.addUser(req);
-});
+    addUser(user) {
+        return new Promise((resolve, reject) => {
+            let emailID = user.emailid;
+            this.getUserByEmailId(emailID).then((result) => {
+                if (result && result.length > 0) {
+                    let msg = 'EmailId already registered with another user.';
+                    console.warn(msg + ' EmailID : ' + emailID);
+                    resolve(msg);
+                }
+                else {
+                    this.collection.insertOne(user);
+                    let msg = 'User added successfully.';
+                    console.log(msg + ' EmailID : ' + emailID);
+                    resolve(msg);
+                }
+            })
+        })
+    }
+}
 
-/*
-    Request for getting a user from DB
-    /all will be passed in the id to get list of all the users    
-*/
-router.get('/:userid', function (req, res) {    
-    dbutils.getUser(req);
-});
-
-//export this router to use in our index.js
-module.exports = router;
+module.exports = User;

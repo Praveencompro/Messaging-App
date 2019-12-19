@@ -1,12 +1,27 @@
-var express = require('express');
-var router = express.Router();
+class Message {
+    constructor(db) {
+        this.collection = db.collection('messages');
+    }
 
-router.get('/', function (req, res) {
-    res.send('get message req recieved');
-});
-router.post('/', function (req, res) {
-    res.send('add mesage req recieved');
-});
+    sendMessage(msgObj) {
+        return new Promise((resolve, reject) => {
+            msgObj['timestamp'] = Date.now();
+            this.collection.insertOne(msgObj);
+            resolve('message sent successfully.');
+        })
+    }
 
-//export this router to use in our index.js
-module.exports = router;
+    getMessages(sender, reciever) {
+        return new Promise((resolve, reject) => {
+            var query = { sender, reciever };
+            var qprojection = { };
+            this.collection.find(query, { projection: qprojection }).toArray(function (err, result) {
+                if (err) throw err;
+                console.log(result);
+                resolve(result);
+            });
+        })
+    }
+}
+
+module.exports = Message;
