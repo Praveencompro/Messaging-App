@@ -1,6 +1,8 @@
+var config = require('./config')
+
 class Message {
     constructor(db) {
-        this.collection = db.collection('messages');
+        this.collection = db.collection(config.database.mongodb.dbschema.messagecollname);
     }
 
     sendMessage(msgObj) {

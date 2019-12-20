@@ -1,17 +1,14 @@
 var express = require('express');
-var bodyParser = require('body-parser');
 var dbObj = require('./DAL/db');
 var logmsg = require('./logmessages')
-
-// create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
-
+var config = require('./config')
+const jwt = require('jsonwebtoken');
 
 var userroutes = express.Router();
 /*
     Request for adding a user in the system
 */
-userroutes.post('/', urlencodedParser, function (req, res) {
+userroutes.post('/', function (req, res) {
     try {
         let userdata = req.body;
         console.log('Request recieved for creating new user. Data : ' + JSON.stringify(userdata));
@@ -19,11 +16,14 @@ userroutes.post('/', urlencodedParser, function (req, res) {
         dbObj.Users.addUser(userdata)
             .then((responsedata) => {
                 console.log('User created successfully. Data : ' + JSON.stringify(userdata));
-                res.send(responsedata);
+                var token = jwt.sign({ userID: userdata.emailId }, config.appsettings.jwttoken, { expiresIn: '2h' });
+                let responseObj = { message: responsedata, jwttoken: token}
+                res.send(responseObj);
             })
             .catch((err) => {
                 console.error(logmsg.genericmessage + err.stack);
-                res.send(logmsg.genericmessage);
+                let responseObj = { message: logmsg.genericmessage }
+                res.send(responseObj);
             })
     }
     catch (err) {
@@ -103,7 +103,7 @@ messageroutes.get('/:sender/:reciever', function (req, res) {
     }
 });
 
-messageroutes.post('/', urlencodedParser, function (req, res) {
+messageroutes.post('/', function (req, res) {
     try {
         let msgObj = req.body;
         console.log('Request recieved for sending message. MessageObj : ' + JSON.stringify(msgObj));

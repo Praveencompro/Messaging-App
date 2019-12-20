@@ -1,6 +1,8 @@
+var config = require('./config')
+
 class User {
     constructor(db) {
-        this.collection = db.collection('users');
+        this.collection = db.collection(config.database.mongodb.dbschema.usercollname);
     }
 
     getUserByEmailId(emailid) {
@@ -34,7 +36,7 @@ class User {
                 if (result && result.length > 0) {
                     let msg = 'EmailId already registered with another user.';
                     console.warn(msg + ' EmailID : ' + emailID);
-                    resolve(msg);
+                    reject(msg);
                 }
                 else {
                     this.collection.insertOne(user);
