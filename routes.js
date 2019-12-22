@@ -86,10 +86,10 @@ messageroutes.get('/:sender/:reciever', function (req, res) {
     try {
         let sender = req.params.sender;
         let reciever = req.params.reciever;
-        console.log('Request recieved for getting messages. sender : ' + sender + ' reciever : ' + reciever);
+        console.log('Request recieved for getting messages. sender : ' + sender + ', reciever : ' + reciever);
         dbObj.Messages.getMessages(sender, reciever)
             .then((result) => {
-                console.log('Messages fetched successfully. sender : ' + sender + ' reciever : ' + reciever);
+                console.log('Messages fetched successfully. sender : ' + sender + ', reciever : ' + reciever);
                 res.send(result);
             })
             .catch((err) => {

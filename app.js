@@ -18,7 +18,11 @@ app.use('/users', routes.userroutes);
 app.use('/messages', routes.messageroutes);
 
 db.init().then(() => {    
-    app.listen(config.appsettings.port, () => {
+    let port = process.env.PORT;
+    if (port == null || port == "") {
+        port = config.appsettings.port;
+      }
+    app.listen(port, () => {
         console.log('Node server started successfully at port : ' + config.appsettings.port);
     });
 })
