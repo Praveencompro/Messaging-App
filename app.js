@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var routes = require('./routes');
 var config = require('./config');
-const db = require('./DAL/db');
+const db = require('./dal/db');
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
@@ -16,6 +16,11 @@ app.use(function (req, res, next) {
 
 app.use('/users', routes.userroutes);
 app.use('/messages', routes.messageroutes);
+app.use('/auth', routes.authroutes);
+
+app.get('/', function (req, res) {
+    res.send("This is a sample Messaging application.");
+});
 
 db.init().then(() => {    
     let port = process.env.PORT;
