@@ -1,7 +1,7 @@
 var express = require('express');
 var config = require('./config');
 var Authcontroller = require('./controllers/authentication');
-var dbObj = require('./dal/db');
+var dbObj = require('./DAL/db');
 
 var authroutes = express.Router();
 let authObj = new Authcontroller();

@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var routes = require('./routes');
 var config = require('./config');
-const db = require('./dal/db');
+const db = require('./DAL/db');
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.json());

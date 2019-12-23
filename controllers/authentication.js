@@ -1,6 +1,6 @@
 var config =  require("./../config");
 var logmsg = require("./../logmessages");
-var dbObj = require('./../dal/db');
+var dbObj = require('./../DAL/db');
 const jwt = require('jsonwebtoken');
 
 class Authentication {
