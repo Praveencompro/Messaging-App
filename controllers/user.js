@@ -10,9 +10,9 @@ class User {
         try {
             let emailid = req.params.userid;
             console.log('Request recieved for getting user data. EmailID : ' + emailid);
-            this.getUserByEmailId(emailid).then((user)=>{
+            this.getUserByEmailId(emailid).then((user) => {
                 res.send(user);
-            })            
+            })
         }
         catch (err) {
             console.error(logmsg.genericmessage + err.stack);
@@ -25,6 +25,19 @@ class User {
         return new Promise((res, rej) => {
             console.log('Request recieved for getting user data. EmailID : ' + emailid);
             var query = { emailid };
+            var qprojection = { 'password': 0 };
+            this.collection.find(query, { projection: qprojection }).toArray(function (err, result) {
+                if (err) throw err;
+                console.log(result);
+                res(result);
+            });
+        })
+    }
+
+    validateUser(emailid, password) {
+        return new Promise((res, rej) => {
+            console.log('Request recieved for getting user data. EmailID : ' + emailid);
+            var query = { emailid, password };
             var qprojection = { 'password': 0 };
             this.collection.find(query, { projection: qprojection }).toArray(function (err, result) {
                 if (err) throw err;
