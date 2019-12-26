@@ -32,7 +32,7 @@ db.init().then(() => {
         port = config.appsettings.port;
       }
     app.listen(port, () => {
-        console.log('Node server started successfully at port : ' + config.appsettings.port);
+        console.log('Node server started successfully at port : ' + port);
     });
 })
 .catch((error)=>{

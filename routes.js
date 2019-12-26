@@ -5,9 +5,10 @@ var dbObj = require('./DAL/db');
 
 var authroutes = express.Router();
 let authObj = new Authcontroller();
-authroutes.post('/signup', (req, res) => {
+/* authroutes.post('/signup', (req, res) => {
     authObj.signup(req, res);
-});
+}); */
+authroutes.post('/signup', authObj.signup);
 authroutes.post('/login', (req, res) => {
     authObj.login(req, res);
 });
